@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Employee Manager</title>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:sans-serif;
+    }
+
+    body{
+      background:#000;
+      color:#fff;
+      padding:30px;
+    }
+
+    h2{
+      margin-bottom:20px;
+    }
+
+    .container{
+      display:flex;
+      gap:20px;
+      margin-bottom:20px;
+    }
+
+    .input-box label{
+      font-size:14px;
+    }
+
+    .input-box input{
+      width:250px;
+      padding:8px;
+      margin-top:5px;
+      border:1px solid #fff;
+      background:#000;
+      color:#fff;
+      border-radius:4px;
+    }
+
+    #btn{
+      padding:12px 20px;
+      margin-top:15px;
+      cursor:pointer;
+    }
+
+    #message{
+      margin-top:15px;
+      font-size:16px;
+      height:20px;
+    }
+
+    #employee-list{
+      margin-top:30px;
+      width:600px;
+      display:flex;
+      flex-direction:column;
+      gap:15px;
+    }
+
+    .employee-box{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      border:1px solid #fff;
+      padding:12px;
+      border-radius:6px;
+    }
+
+    .employee-info{
+      display:flex;
+      gap:25px;
+    }
+
+    .delete-btn{
+      padding:6px 10px;
+      cursor:pointer;
+      border:none;
+      border-radius:5px;
+      background:#fff;
+      color:#000;
+      font-size:13px;
+      font-weight:bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>New Employees</h2>
+
+  <div class="container">
+    <div class="input-box">
+      <label>Name</label>
+      <input type="text" id="name">
+    </div>
+    <div class="input-box">
+      <label>Profession</label>
+      <input type="text" id="profession">
+    </div>
+    <div class="input-box">
+      <label>Age</label>
+      <input type="number" id="age">
+    </div>
+  </div>
+
+  <button id="btn">Add Employee</button>
+
+  <div id="message"></div>
+
+  <h3 style="margin-top:25px;">Added Employees</h3>
+
+  <div id="employee-list">You have 0 employees.</div>
+
+
+<script>
+  const nameInput = document.getElementById("name");
+  const professionInput = document.getElementById("profession");
+  const ageInput = document.getElementById("age");
+  const btn = document.getElementById("btn");
+  const message = document.getElementById("message");
+  const employeeList = document.getElementById("employee-list");
+
+  let employees = []; 
+
+  btn.addEventListener("click", function () {
+    let name = nameInput.value.trim();
+    let profession = professionInput.value.trim();
+    let age = ageInput.value.trim();
+
+    // Validate Input
+    if(name === "" || profession === "" || age === ""){
+      message.style.color = "red";
+      message.innerHTML = "Error: Please fill all fields.";
+      return;
+    }
+
+    // Create Employee Object
+    let employee = {
+      id: employees.length + 1,
+      name: name,
+      profession: profession,
+      age: Number(age)
+    };
+
+    employees.push(employee);
+
+    message.style.color = "green";
+    message.innerHTML = "Success: Employee Added.";
+
+    nameInput.value = "";
+    professionInput.value = "";
+    ageInput.value = "";
+
+    renderEmployees();
+  });
+
+  // Display List of Employees
+  function renderEmployees(){
+    employeeList.innerHTML = "";
+
+    if(employees.length === 0){
+      employeeList.innerHTML = "You have 0 employees.";
+      return;
+    }
+
+    employees.forEach((emp, index) => {
+      const box = document.createElement("div");
+      box.classList.add("employee-box");
+
+      box.innerHTML = `
+        <div class="employee-info">
+          <span>${emp.id}.</span>
+          <span>Name: ${emp.name}</span>
+          <span>Profession: ${emp.profession}</span>
+          <span>Age: ${emp.age}</span>
+        </div>
+        <button class="delete-btn" data-id="${emp.id}">Delete</button>
+      `;
+
+      employeeList.appendChild(box);
+    });
+  }
+
+  // Delete Employee
+  employeeList.addEventListener("click", function(e){
+    if(e.target.classList.contains("delete-btn")){
+      let id = Number(e.target.getAttribute("data-id"));
+
+      employees = employees.filter(emp => emp.id !== id);
+      employees.forEach((emp, index) => emp.id = index + 1);
+
+      renderEmployees();
+    }
+  });
+</script>
+
+</body>
+</html>
